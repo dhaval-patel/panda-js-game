@@ -4,7 +4,8 @@ game.module(
 .require(
 	'game.assets',
 	'game.scenes',
-    'engine.core'
+    'engine.core',
+    'game.myphysics'
 )
 .body(function() {
 	
