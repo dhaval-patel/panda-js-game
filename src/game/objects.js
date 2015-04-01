@@ -54,36 +54,42 @@ game.module(
 
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
-
-			if (this.movingDirection === 'UP') {
-			}
 		},
 		collide: function (body, type) {
-			this.stopY();
-			this.removeYGravity();
-			this.position.y = body.position.y - this.shape.height;
+			if (type === 'DOWN') {
+				this.stopY();
+				// this.removeYGravity();
+				this.position.y = body.position.y - this.shape.height;
+			} else if (type === 'RIGHT') {
+				this.stop(type);
+				this.position.x = body.position.x - this.shape.width;
+			} else if (type === 'LEFT') {
+				this.stop(type);
+				this.position.x = body.position.x + body.shape.width;
+			}
 		},
 		changePlayerSprite: function (x, y) {
 			this.sprite.crop(x, y, this.shape.width, this.shape.height);
 		},
 		move: function (dir) {
-			this.movingDirection && this.stop(this.movingDirection);
-
-			this.movingDirection = dir;
-
+			if ((dir === 'RIGHT' && this.movingDirection === 'LEFT') || (dir === 'LEFT' && this.movingDirection === 'RIGHT')) {
+				this.stop(this.movingDirection);
+			}
+ 
 			if (dir === 'RIGHT') {
-				this.velocity.x = 50;
+				this.velocity.x = 100;
 				this.sprite.crop(this.shape.width, 0, this.shape.width, this.shape.height);
 				this.moveX(dir);
 			} else if (dir === 'LEFT'){
-				this.velocity.x = -50;
+				this.velocity.x = -100;
 				this.sprite.crop(this.shape.width, this.shape.height, this.shape.width, this.shape.height);
 				this.moveX(dir);
 			} else if (dir === 'UP') {
-				this.force.y = 980;
-				// this.system.delta = -0.001;
-				this.position.y = 0;
+				this.world.gravity.y = 980;
+				this.velocity.y = -600;
 			}
+
+			this.movingDirection = dir;
 		},
 		calNextSprite: function (dir) {
 			var cropX = null;
@@ -105,14 +111,15 @@ game.module(
 
 		},
 		stop: function (dir) {
-			if (this.movingDirection === dir && (dir === 'LEFT' || dir === 'RIGHT')) {
+			if (dir === 'LEFT' || dir === 'RIGHT') {
 				this.stopX(dir);
+
+				if (this.movingTimer) {
+					game.scene.removeTimer(this.movingTimer);
+					this.movingTimer = null;
+				}
 			}
 
-			if (this.movingTimer) {
-				game.scene.removeTimer(this.movingTimer);
-				this.movingTimer = null;
-			}
 		},
 		stopX: function (dir) {
 			this.velocity.x = 0;
@@ -123,7 +130,6 @@ game.module(
 				this.sprite.crop(0, this.shape.height, this.shape.width, this.shape.height);
 			}
 
-			this.movingDirection = null;
 			return this;
 		},
 		stopY: function () {

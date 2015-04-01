@@ -19,16 +19,28 @@ game.module(
 			this.world = new game.World();
 			
 			// adding a plane which will represent the ground
-			var planeShape = new game.Solid(0, game.system.height - 100, game.system.width, 20);
+			var planeShape = new game.Solid(0, game.system.height - 20, game.system.width, 20);
 
 			// add player
 			this.player = new game.Player(100, 100 , 50 , 50);
 			this.addObject(this.player);
+
+			// add some solid box for player
+			var solidBox = new game.Solid(200, game.system.height - 70, 100 , 50);
+			solidBox = new game.Solid(300, game.system.height - 250, 100 , 230);
+
+
+			// add some text
+			this.text = new game.Text('Let\'s do some practice', {
+				font: '20px bold Arial'
+			});
+			this.text.position.x = this.text.position.y = 100
+			this.stage.addChild(this.text);
 		},
-		click: function (event) {
+		// click: function (event) {
 			// console.log(event.global.x, event.global.y);
 			// this.addRectangle(event.swipeX, event.swipeY);
-		},
+		// },
 		addRectangle: function (x, y) {
 			var rect = new game.Box(x, y);
 			this._rect.push(rect);
