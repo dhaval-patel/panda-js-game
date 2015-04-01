@@ -35,12 +35,12 @@ game.module(
 			this.addObject(rect);
 		},
 		keydown: function (key) {
-			if (key === 'RIGHT' || key === 'LEFT') {
+			if (key === 'RIGHT' || key === 'LEFT' || key === 'UP') {
 				this.player.move(key);
 			}
 		},
 		keyup: function (key) {
-			if (key === 'RIGHT' || key === 'LEFT') {
+			if (key === 'RIGHT' || key === 'LEFT' || key === 'UP') {
 				this.player.stop(key);	
 			}
 		}

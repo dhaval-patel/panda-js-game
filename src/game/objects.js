@@ -21,6 +21,7 @@ game.module(
 
 	game.createClass('Player', 'Body', {
 		movingDirection: null,
+		movingTimer: null,
 		init: function (x, y) {
 			var w = 89, h = 145;
 
@@ -54,11 +55,7 @@ game.module(
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
 
-			if (this.movingDirection) {
-				if (this.movingDirection === 'RIGHT') {
-					var cropX = (this.sprite.texture.crop.x + this.shape.width)/this.shape.width <= 3 ? this.sprite.texture.crop.x + this.shape.width : 0;
-					this.sprite.crop(cropX, 0, this.shape.width, this.shape.height);
-				}
+			if (this.movingDirection === 'UP') {
 			}
 		},
 		collide: function (body, type) {
@@ -66,24 +63,66 @@ game.module(
 			this.removeYGravity();
 			this.position.y = body.position.y - this.shape.height;
 		},
+		changePlayerSprite: function (x, y) {
+			this.sprite.crop(x, y, this.shape.width, this.shape.height);
+		},
 		move: function (dir) {
+			this.movingDirection && this.stop(this.movingDirection);
+
 			this.movingDirection = dir;
 
 			if (dir === 'RIGHT') {
 				this.velocity.x = 50;
 				this.sprite.crop(this.shape.width, 0, this.shape.width, this.shape.height);
+				this.moveX(dir);
 			} else if (dir === 'LEFT'){
 				this.velocity.x = -50;
+				this.sprite.crop(this.shape.width, this.shape.height, this.shape.width, this.shape.height);
+				this.moveX(dir);
+			} else if (dir === 'UP') {
+				this.force.y = 980;
+				// this.system.delta = -0.001;
+				this.position.y = 0;
 			}
+		},
+		calNextSprite: function (dir) {
+			var cropX = null;
+		
+			if (dir === 'RIGHT') {
+				cropX = (this.sprite.texture.crop.x + this.shape.width)/this.shape.width <= 3 ?
+														 this.sprite.texture.crop.x + this.shape.width : 0;
+			} else {
+				cropX = (this.sprite.texture.crop.x - this.shape.width) < 0 ?
+														 3 * this.shape.width : (this.sprite.texture.crop.x - this.shape.width);
+			}
+
+			return cropX;
+		},
+		moveX: function (dir) {
+			this.movingTimer = game.scene.addTimer(300, (function () {
+				this.changePlayerSprite(this.calNextSprite (dir), this.sprite.texture.crop.y);				
+			}).bind(this), true);
+
 		},
 		stop: function (dir) {
 			if (this.movingDirection === dir && (dir === 'LEFT' || dir === 'RIGHT')) {
-				this.stopX();
+				this.stopX(dir);
+			}
+
+			if (this.movingTimer) {
+				game.scene.removeTimer(this.movingTimer);
+				this.movingTimer = null;
 			}
 		},
-		stopX: function () {
+		stopX: function (dir) {
 			this.velocity.x = 0;
-			this.sprite.crop(0, 0, this.shape.width, this.shape.height);
+
+			if (dir === 'RIGHT') {
+				this.sprite.crop(0, 0, this.shape.width, this.shape.height);
+			} else {
+				this.sprite.crop(0, this.shape.height, this.shape.width, this.shape.height);
+			}
+
 			this.movingDirection = null;
 			return this;
 		},
