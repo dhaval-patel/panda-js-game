@@ -54,7 +54,7 @@ game.module(
 			}
 		},
 		keyup: function (key) {
-			if (key === 'RIGHT' || key === 'LEFT' || key === 'UP') {
+			if (key === 'RIGHT' || key === 'LEFT') {
 				this.player.stop(key);	
 			}
 		}

@@ -25,7 +25,6 @@ game.module(
 			y: null
 		},
 		movingTimer: null,
-		isOnGround: false,
 		init: function (x, y) {
 			var w = 89, h = 145;
 
@@ -58,15 +57,11 @@ game.module(
 
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
-
-			// console.log(this.position.x, this.position.y, this.position.x + this.shape.width, this.position.y + this.shape.height);
-			// console.log(this.last.x, this.last.y, this.last.x + this.shape.width, this.last.y + this.shape.height);
 		},
 		collide: function (body, type) {
 			console.log(type);
 			if (type === 'DOWN') {
 				this.stopY();
-				this.isOnGround = true;
 				this.position.y = body.position.y - this.shape.height;
 
 				if (this.movingDirection.x === null) {
@@ -76,11 +71,10 @@ game.module(
 			} else if (type === 'RIGHT') {
 				this.stop(type);
 				this.position.x = body.position.x - this.shape.width;
-				// this.last.copy(this.position);
 			} else if (type === 'LEFT') {
 				this.stop(type);
 				this.position.x = body.position.x + body.shape.width;
-			} else if (type === 'UP' && !this.isOnGround) {
+			} else if (type === 'UP' && this.movingDirection.y) {
 				this.position.y = body.position.y + body.shape.height;
 				this.velocity.y = 0;
 			}
@@ -131,9 +125,9 @@ game.module(
 		},
 		moveY: function (dir) {
 			if (dir === 'UP') {
-				this.world.gravity.y = 980;
+				this.resetYGravity();
 				this.velocity.y = -600;
-				this.isOnGround = false;
+				this.movingDirection.y = dir;
 			}
 
 			this.movingDirection.y = dir;
@@ -144,7 +138,6 @@ game.module(
 			} else if (dir === 'UP' || dir === 'LEFT') {
 				this.stopY(dir);
 			}
-
 		},
 		stopX: function (dir) {
 			this.velocity.x = 0;

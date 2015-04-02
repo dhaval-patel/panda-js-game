@@ -43,7 +43,6 @@ game.module(
 		var bW = b.shape.width;
 		var bH = b.shape.height;
 
-
 		return !(bX > (aX + aW) || (bX + bW) <  aX || bY > (aY + aH) || (bY + bH) < aY);
 	};
 
@@ -69,7 +68,7 @@ game.module(
 			var rHit = rightMovementHit(a, b);
 			var lHit = leftMovementHit(a, b);
 
-			if (a.movingDirection.x && !a.isOnGround && (rHit || lHit)) {
+			if (a.movingDirection.x && a.movingDirection.y && (rHit || lHit)) {
 				if (uHit) {
 					if (a.last.y <= b.position.y + b.shape.height && a.position.y <= b.position.y + b.shape.height) {
 						if (rHit) {
