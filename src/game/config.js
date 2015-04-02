@@ -3,8 +3,8 @@ pandaConfig = {
     version: '0.0.0',
 
     system: {
-        width: 800,
-        height: 800,
+        width: 500,
+        height: 500,
         scaleToFit: false
     }
 };

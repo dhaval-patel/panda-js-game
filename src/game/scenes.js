@@ -22,12 +22,14 @@ game.module(
 			var planeShape = new game.Solid(0, game.system.height - 20, game.system.width, 20);
 
 			// add player
-			this.player = new game.Player(100, 100 , 50 , 50);
+			this.player = new game.Player(100, 400 , 50 , 50);
 			this.addObject(this.player);
 
 			// add some solid box for player
 			var solidBox = new game.Solid(200, game.system.height - 70, 100 , 50);
 			solidBox = new game.Solid(300, game.system.height - 250, 100 , 230);
+
+			solidBox = new game.Solid(100, game.system.height - 300, 100 , 50);
 
 
 			// add some text

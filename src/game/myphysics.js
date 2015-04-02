@@ -69,6 +69,41 @@ game.module(
 			var rHit = rightMovementHit(a, b);
 			var lHit = leftMovementHit(a, b);
 
+			if (a.movingDirection.x && !a.isOnGround && (rHit || lHit)) {
+				if (uHit) {
+					if (a.last.y <= b.position.y + b.shape.height && a.position.y <= b.position.y + b.shape.height) {
+						if (rHit) {
+							if (a.last.x + a.shape.width > b.position.x) {
+								a.collide(b, 'UP');
+							} else {
+								a.collide(b, 'RIGHT');
+							}
+						} else if(lHit) {
+							if (a.last.x < b.position.x + b.shape.width) {
+								a.collide(b, 'UP');
+							} else {
+								a.collide(b, 'LEFT');
+							}
+						}						
+					}
+				} else if (dHit) {
+					if (a.last.y + a.shape.height >= b.position.y && a.position.y + a.shape.height >= b.position.y) {
+						if (rHit) {
+							if (a.last.x + a.shape.width > b.position.x) {
+								a.collide(b, 'DOWN');
+							} else {
+								a.collide(b, 'RIGHT');
+							}
+						} else if(lHit) {
+							if (a.last.x < b.position.x + b.shape.width) {
+								a.collide(b, 'DOWN');
+							} else {
+								a.collide(b, 'LEFT');
+							}
+						}						
+					} 
+				}
+			}
 
 			if (rightHit(a, b) && leftHit(a, b)) {
 				if (dHit) {

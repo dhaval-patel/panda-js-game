@@ -20,8 +20,12 @@ game.module(
 	});
 
 	game.createClass('Player', 'Body', {
-		movingDirection: null,
+		movingDirection: {
+			x: null,
+			y: null
+		},
 		movingTimer: null,
+		isOnGround: false,
 		init: function (x, y) {
 			var w = 89, h = 145;
 
@@ -54,42 +58,39 @@ game.module(
 
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
+
+			// console.log(this.position.x, this.position.y, this.position.x + this.shape.width, this.position.y + this.shape.height);
+			// console.log(this.last.x, this.last.y, this.last.x + this.shape.width, this.last.y + this.shape.height);
 		},
 		collide: function (body, type) {
+			console.log(type);
 			if (type === 'DOWN') {
 				this.stopY();
-				// this.removeYGravity();
+				this.isOnGround = true;
 				this.position.y = body.position.y - this.shape.height;
+
+				if (this.movingDirection.x === null) {
+					this.velocity.y = 0;
+					this.removeYGravity();
+				}
 			} else if (type === 'RIGHT') {
 				this.stop(type);
 				this.position.x = body.position.x - this.shape.width;
+				// this.last.copy(this.position);
 			} else if (type === 'LEFT') {
 				this.stop(type);
 				this.position.x = body.position.x + body.shape.width;
+			} else if (type === 'UP' && !this.isOnGround) {
+				this.position.y = body.position.y + body.shape.height;
+				this.velocity.y = 0;
 			}
-		},
-		changePlayerSprite: function (x, y) {
-			this.sprite.crop(x, y, this.shape.width, this.shape.height);
 		},
 		move: function (dir) {
-			if ((dir === 'RIGHT' && this.movingDirection === 'LEFT') || (dir === 'LEFT' && this.movingDirection === 'RIGHT')) {
-				this.stop(this.movingDirection);
-			}
- 
-			if (dir === 'RIGHT') {
-				this.velocity.x = 100;
-				this.sprite.crop(this.shape.width, 0, this.shape.width, this.shape.height);
-				this.moveX(dir);
-			} else if (dir === 'LEFT'){
-				this.velocity.x = -100;
-				this.sprite.crop(this.shape.width, this.shape.height, this.shape.width, this.shape.height);
+			if (dir === 'RIGHT' || dir === 'LEFT') {
 				this.moveX(dir);
 			} else if (dir === 'UP') {
-				this.world.gravity.y = 980;
-				this.velocity.y = -600;
+				this.moveY(dir);
 			}
-
-			this.movingDirection = dir;
 		},
 		calNextSprite: function (dir) {
 			var cropX = null;
@@ -104,25 +105,56 @@ game.module(
 
 			return cropX;
 		},
+		changePlayerSprite: function (x, y) {
+			this.sprite.crop(x, y, this.shape.width, this.shape.height);
+		},
 		moveX: function (dir) {
+			if (this.movingDirection.x && this.movingDirection.x != dir) {
+				stop(this.movingDirection.x);
+			}
+
+			this.movingDirection.x = dir;
+
+			if (dir === 'RIGHT') {
+				this.velocity.x = 100;
+				this.sprite.crop(this.shape.width, 0, this.shape.width, this.shape.height);
+			} else {
+				this.velocity.x = -100;
+				this.sprite.crop(this.shape.width, this.shape.height, this.shape.width, this.shape.height);
+			}
+
 			this.movingTimer = game.scene.addTimer(300, (function () {
 				this.changePlayerSprite(this.calNextSprite (dir), this.sprite.texture.crop.y);				
 			}).bind(this), true);
 
+			this.resetYGravity();
+		},
+		moveY: function (dir) {
+			if (dir === 'UP') {
+				this.world.gravity.y = 980;
+				this.velocity.y = -600;
+				this.isOnGround = false;
+			}
+
+			this.movingDirection.y = dir;
 		},
 		stop: function (dir) {
 			if (dir === 'LEFT' || dir === 'RIGHT') {
 				this.stopX(dir);
-
-				if (this.movingTimer) {
-					game.scene.removeTimer(this.movingTimer);
-					this.movingTimer = null;
-				}
+			} else if (dir === 'UP' || dir === 'LEFT') {
+				this.stopY(dir);
 			}
 
 		},
 		stopX: function (dir) {
 			this.velocity.x = 0;
+			this.movingDirection.x = null;
+
+
+			if (this.movingTimer) {
+				game.scene.removeTimer(this.movingTimer);
+				this.movingTimer = null;
+			}
 
 			if (dir === 'RIGHT') {
 				this.sprite.crop(0, 0, this.shape.width, this.shape.height);
@@ -134,13 +166,14 @@ game.module(
 		},
 		stopY: function () {
 			this.velocity.y = 0;
+			this.movingDirection.y = null;
 			return this;
 		},
 		removeYGravity: function () {
 			this.world.gravity.y = 0;
 		},
-		removeXGravity: function () {
-
+		resetYGravity: function () {
+			this.world.gravity.y = 980;
 		}
 	});
 
