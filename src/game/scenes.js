@@ -20,24 +20,46 @@ game.module(
 			
 			// adding a plane which will represent the ground
 			var planeShape = new game.Solid(0, game.system.height - 20, game.system.width, 20);
+			planeShape = new game.Solid(0, 0, game.system.width, 20);
+			planeShape = new game.Solid(0, 20, 20, game.system.height - 40);
+			planeShape = new game.Solid(game.system.width - 20, 20, 20, game.system.height - 40);
 
 			// add player
-			this.player = new game.Player(100, 400 , 50 , 50);
-			this.addObject(this.player);
+			this.player = new game.Player(100, 40 , 50 , 50);
+			// this.addObject(this.player);
 
 			// add some solid box for player
-			var solidBox = new game.Solid(200, game.system.height - 70, 100 , 50);
-			solidBox = new game.Solid(300, game.system.height - 250, 100 , 230);
+			var solidBox = new game.Solid(100, 150, 100 , 50);
+			solidBox = new game.Solid(350, game.system.height - 150, 100, 130);
+			solidBox = new game.Solid(500, game.system.height - 150, 100, 130);
+			solidBox = new game.Solid(600, game.system.height - 250, 100, 230);
 
-			solidBox = new game.Solid(100, game.system.height - 300, 100 , 50);
+			solidBox = new game.Solid(game.system.width - 200, game.system.height - 150, 100 , 50);
 
 
 			// add some text
-			this.text = new game.Text('Let\'s do some practice', {
+			var text = new game.Text('Let\'s do some practice', {
 				font: '20px bold Arial'
 			});
-			this.text.position.x = this.text.position.y = 100
-			this.stage.addChild(this.text);
+			text.position.x = game.system.width - 500;
+			text.position.y = 100
+			this.stage.addChild(text);
+
+			text = new game.Text('Start', {
+				font: '20px bold Arial',
+				fill: '#ffffff'
+			});
+			text.position.x = 105;
+			text.position.y = 155;
+			this.stage.addChild(text);
+
+			text = new game.Text('End', {
+				font: '20px bold Arial',
+				fill: '#ffffff'
+			});
+			text.position.x = game.system.width - 195;
+			text.position.y = game.system.height - 145;
+			this.stage.addChild(text);
 		},
 		// click: function (event) {
 			// console.log(event.global.x, event.global.y);
@@ -49,7 +71,7 @@ game.module(
 			this.addObject(rect);
 		},
 		keydown: function (key) {
-			if (key === 'RIGHT' || key === 'LEFT' || key === 'UP') {
+			if (key === 'RIGHT' || key === 'LEFT' || key === 'UP'  || key === 'SPACE') {
 				this.player.move(key);
 			}
 		},

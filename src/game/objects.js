@@ -26,7 +26,7 @@ game.module(
 		},
 		movingTimer: null,
 		init: function (x, y) {
-			var w = 89, h = 145;
+			var w = 49, h = 80;
 
 			this._super({
 				mass: 1,
@@ -35,7 +35,7 @@ game.module(
 					y: y
 				},
 				collisionGroup: 2,
-				collideAgainst: [0, 1]
+				collideAgainst: [0, 3]
 			});
 
 			var shape = new game.Rectangle(w, h);
@@ -58,10 +58,10 @@ game.module(
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
 
-			this.toString();
+			// this.toString();
 		},
 		collide: function (body, type) {
-			console.log(type);
+			// console.log(type);
 			if (type === 'DOWN') {
 				this.stopY();
 				this.position.y = body.position.y - this.shape.height;
@@ -74,17 +74,20 @@ game.module(
 				// this.stop(type);
 				this.position.x = body.position.x - this.shape.width;
 			} else if (type === 'LEFT') {
-				this.stop(type);
+				// this.stop(type);
 				this.position.x = body.position.x + body.shape.width;
 			} else if (type === 'UP' && this.movingDirection.y) {
 				this.position.y = body.position.y + body.shape.height;
 				this.velocity.y = 0;
 			}
+
+			this.toString();
 		},
 		move: function (dir) {
 			if (dir === 'RIGHT' || dir === 'LEFT') {
 				this.moveX(dir);
-			} else if (dir === 'UP') {
+			} else if (dir === 'UP' || dir === 'SPACE') {
+				dir = 'UP';
 				this.moveY(dir);
 			}
 		},
@@ -112,10 +115,10 @@ game.module(
 			this.movingDirection.x = dir;
 
 			if (dir === 'RIGHT') {
-				this.velocity.x = 100;
+				this.velocity.x = 300;
 				this.sprite.crop(this.shape.width, 0, this.shape.width, this.shape.height);
 			} else {
-				this.velocity.x = -100;
+				this.velocity.x = -300;
 				this.sprite.crop(this.shape.width, this.shape.height, this.shape.width, this.shape.height);
 			}
 
@@ -235,6 +238,13 @@ game.module(
 		update: function() { 
            	this.graphics.position.x = this.body.position.x;
            	this.graphics.position.y = this.body.position.y;
+		}
+	});
+
+	game.createClass('End', 'Solid', {
+		collisionGroup: 3,
+		init: function (x, y, w, h) {
+			this._super(x, y, w, h);
 		}
 	});
 });

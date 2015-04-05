@@ -102,23 +102,54 @@ game.module(
 						}						
 					} 
 				}
-			}
-
-			if (rightHit(a, b) && leftHit(a, b)) {
+			} else if (a.movingDirection.x) {
 				if (dHit) {
-					a.collide(b, 'DOWN');
-				} else if (uHit) {
-					a.collide(b, 'UP');
+					if (a.last.y + a.shape.height <= b.position.y && a.position.y + a.shape.height > b.shape.height) {
+						a.collide(b, 'DOWN');
+					}
 				}
+
+				if (a.movingDirection.x === 'RIGHT' && rightHit(a, b) && a.last.x + a.shape.width <= b.position.x) {
+					a.collide(b, 'RIGHT');
+				} else if (a.movingDirection.x === 'LEFT' && leftHit(a, b) && a.last.x >= b.position.x + b.shape.width) {
+					a.collide(b, 'LEFT');
+				}
+			} else if (a.movingDirection.y) {
+				if (rightHit(a, b) && leftHit(a, b)) {
+					if (dHit) {
+						a.collide(b, 'DOWN');
+					} else if (uHit) {
+						a.collide(b, 'UP');
+					}
+				}
+
+				if (downHit(a, b) && upHit(a, b)) {
+					if (rHit) {
+						a.collide(b, 'RIGHT');
+					} else if (lHit) {
+						a.collide(b, 'LEFT');
+					}	
+				}			
+			} else {
+				if (rightHit(a, b) && leftHit(a, b)) {
+					if (dHit) {
+						a.collide(b, 'DOWN');
+					} else if (uHit) {
+						a.collide(b, 'UP');
+					}
+				}
+
+				if (downHit(a, b) && upHit(a, b)) {
+					if (rHit) {
+						a.collide(b, 'RIGHT');
+					} else if (lHit) {
+						a.collide(b, 'LEFT');
+					}	
+				}				
 			}
 
-			if (downHit(a, b) && upHit(a, b)) {
-				if (rHit) {
-					a.collide(b, 'RIGHT');
-				} else if (lHit) {
-					a.collide(b, 'LEFT');
-				}	
-			}
+
+
 		}
 	});
 });
