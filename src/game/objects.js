@@ -57,6 +57,8 @@ game.module(
 
 			this.sprite.position.x = this.position.x;
 			this.sprite.position.y = this.position.y;
+
+			this.toString();
 		},
 		collide: function (body, type) {
 			console.log(type);
@@ -69,7 +71,7 @@ game.module(
 					this.removeYGravity();
 				}
 			} else if (type === 'RIGHT') {
-				this.stop(type);
+				// this.stop(type);
 				this.position.x = body.position.x - this.shape.width;
 			} else if (type === 'LEFT') {
 				this.stop(type);
@@ -167,6 +169,9 @@ game.module(
 		},
 		resetYGravity: function () {
 			this.world.gravity.y = 980;
+		},
+		toString: function () {
+			console.log(this.position.x, this.position.y, this.position.x + this.shape.width, this.position.y + this.shape.height);
 		}
 	});
 
