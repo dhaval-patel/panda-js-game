@@ -2,10 +2,14 @@ game.module(
     'game.main'
 )
 .require(
-	'game.assets',
-	'game.scenes',
     'engine.core',
-    'game.myphysics'
+    'game.myphysics',
+	'game.assets',
+    'game.object.logo',
+    'game.object.player',
+    'game.object.solid',
+	'game.scene.scene1',
+	'game.scene.end'
 )
 .body(function() {
 	
